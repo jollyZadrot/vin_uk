@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Lookup — UK</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vehicle Lookup</h1>
+            <p class="subtitle">UK vehicle information by registration</p>
+        </header>
+
+        <form method="POST" class="search-form" autocomplete="off">
+            <div class="input-wrapper">
+                <span class="prefix">GB</span>
+                <input
+                    type="text"
+                    name="reg_number"
+                    id="reg_number"
+                    placeholder="E366SJW"
+                    value="{{ reg_number }}"
+                    maxlength="8"
+                    required
+                    autofocus
+                >
+            </div>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if error %}
+        <div class="alert alert-error">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <strong>{{ error.title }}</strong>
+                <p>{{ error.message }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if vehicle %}
+        <div class="alert alert-success">
+            <div class="alert-icon">✓</div>
+            <div class="alert-content">
+                <strong>Vehicle found</strong>
+            </div>
+        </div>
+
+        <div class="vehicle-card">
+            <div class="vehicle-header">
+                <span class="reg-badge">{{ vehicle.reg }}</span>
+            </div>
+            <table>
+                <tr>
+                    <th>Manufacturer</th>
+                    <td>{{ vehicle.manufacturer or '—' }}</td>
+                </tr>
+                <tr>
+                    <th>Model</th>
+                    <td>{{ vehicle.model or '—' }}</td>
+                </tr>
+                <tr>
+                    <th>Year</th>
+                    <td>{{ vehicle.year or '—' }}</td>
+                </tr>
+                <tr>
+                    <th>Colour</th>
+                    <td>{{ vehicle.colour or '—' }}</td>
+                </tr>
+                <tr>
+                    <th>Fuel</th>
+                    <td>{{ vehicle.fuel or '—' }}</td>
+                </tr>
+                <tr>
+                    <th>VIN</th>
+                    <td><code>{{ vehicle.vin or '—' }}</code></td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p>Data source: <a href="https://chipex.co.uk" target="_blank" rel="noopener">chipex.co.uk</a></p>
+            <p>API: <code>/api/lookup/&lt;REG&gt;</code></p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('reg_number').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
